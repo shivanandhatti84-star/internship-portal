@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Internships</title>
+
+<style>
+body{font-family:Arial;background:#eef2f7;}
+.container{width:80%;margin:auto;}
+.item{
+background:white;
+padding:15px;
+margin:10px;
+border-radius:10px;
+}
+button{
+background:green;
+color:white;
+border:none;
+padding:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Internships</h2>
+
+<div class="container" id="list"></div>
+
+<script>
+
+function load(){
+
+let data = JSON.parse(localStorage.getItem("internships")) || [];
+list.innerHTML = "";
+
+data.forEach(i=>{
+
+list.innerHTML += `
+<div class="item">
+<b>${i.company}</b><br>
+Role: ${i.role}<br>
+Location: ${i.location}<br>
+Duration: ${i.duration}<br>
+Stipend: ${i.stipend}<br>
+Slots: ${i.slots}<br>
+
+${i.slots>0 
+? `<button onclick="apply(${i.id})">Apply</button>` 
+: `<span style="color:red;">Slots Full</span>`}
+
+</div>`;
+});
+
+}
+
+function apply(id){
+
+let name = prompt("Enter Name");
+let usn = prompt("Enter USN");
+
+let internships = JSON.parse(localStorage.getItem("internships")) || [];
+let apps = JSON.parse(localStorage.getItem("applications")) || [];
+
+let index = internships.findIndex(i=>i.id===id);
+
+if(internships[index].slots<=0){
+alert("No slots");
+return;
+}
+
+internships[index].slots--;
+
+apps.push({
+name,
+usn,
+internship: internships[index].company,
+status:"Pending"
+});
+
+localStorage.setItem("internships", JSON.stringify(internships));
+localStorage.setItem("applications", JSON.stringify(apps));
+
+alert("Applied");
+
+load();
+}
+
+load();
+
+</script>
+
+</body>
+</html>
